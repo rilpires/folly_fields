@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:folly_fields/crud/abstract_model.dart';
 import 'package:folly_fields/crud/abstract_ui_builder.dart';
@@ -43,6 +44,7 @@ class ListField<T extends AbstractModel<Object>,
     int? sizeLarge,
     int? sizeExtraLarge,
     double? minHeight,
+    bool expandable = false,
     Key? key,
   }) : super(
           key: key,
@@ -72,78 +74,103 @@ class ListField<T extends AbstractModel<Object>,
                     ))
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 
+            /// Content Widget
+            List<Widget> contentWidget = <Widget>[];
+
+            if (field.value!.isEmpty) {
+              /// Empty List
+              contentWidget.add(
+                SizedBox(
+                  height: 75,
+                  child: Center(
+                    child: Text(
+                      sprintf(
+                        emptyListText,
+                        <dynamic>[uiBuilder.superPlural],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              contentWidget.addAll(
+                field.value!
+                    .asMap()
+                    .entries
+                    .map(
+                      (MapEntry<int, T> entry) => _MyListTile<T, UI>(
+                        index: entry.key,
+                        model: entry.value,
+                        uiBuilder: uiBuilder,
+                        onEdit: (int index, T model) async {
+                          if (beforeEdit != null) {
+                            bool go =
+                                await beforeEdit(field.context, index, model);
+                            if (!go) {
+                              return;
+                            }
+                          }
+
+                          if (routeEditBuilder != null) {
+                            T? returned =
+                                await Navigator.of(field.context).push(
+                              MaterialPageRoute<T>(
+                                builder: (BuildContext context) =>
+                                    routeEditBuilder(
+                                  context,
+                                  model,
+                                  uiBuilder,
+                                  enabled,
+                                ),
+                              ),
+                            );
+
+                            if (returned != null) {
+                              field.value![index] = returned;
+
+                              field.value!.sort(listSort ??
+                                  (T a, T b) =>
+                                      a.toString().compareTo(b.toString()));
+
+                              field.didChange(field.value);
+                            }
+                          }
+                        },
+                        onDelete: (T model) {
+                          field.value!.remove(model);
+                          field.didChange(field.value);
+                        },
+                        removeText: removeText,
+                        enabled: enabled,
+                      ),
+                    )
+                    .toList(),
+              );
+            }
+
             return FieldGroup(
               padding: padding,
               decoration: effectiveDecoration,
               children: <Widget>[
-                if (field.value!.isEmpty)
-
-                  /// Lista vazia.
-                  SizedBox(
-                    height: 75,
-                    child: Center(
-                      child: Text(
-                        sprintf(
-                          emptyListText,
-                          <dynamic>[uiBuilder.superPlural],
+                /// Content
+                if (expandable && field.value!.isNotEmpty)
+                  ExpandableNotifier(
+                    child: Column(
+                      children: <Widget>[
+                        ExpandableButton(
+                          child: const Text('Expand'),
                         ),
-                      ),
+                        Expandable(
+                          expanded: Column(
+                            children: contentWidget,
+                          ),
+                          collapsed: const Text('collapsed'),
+                        ),
+                      ],
                     ),
                   )
                 else
-
-                  /// Lista
-                  ...field.value!
-                      .asMap()
-                      .entries
-                      .map(
-                        (MapEntry<int, T> entry) => _MyListTile<T, UI>(
-                          index: entry.key,
-                          model: entry.value,
-                          uiBuilder: uiBuilder,
-                          onEdit: (int index, T model) async {
-                            if (beforeEdit != null) {
-                              bool go =
-                                  await beforeEdit(field.context, index, model);
-                              if (!go) {
-                                return;
-                              }
-                            }
-
-                            if (routeEditBuilder != null) {
-                              T? returned =
-                                  await Navigator.of(field.context).push(
-                                MaterialPageRoute<T>(
-                                  builder: (BuildContext context) =>
-                                      routeEditBuilder(
-                                    context,
-                                    model,
-                                    uiBuilder,
-                                    enabled,
-                                  ),
-                                ),
-                              );
-
-                              if (returned != null) {
-                                field.value![index] = returned;
-
-                                field.value!.sort(listSort ??
-                                    (T a, T b) =>
-                                        a.toString().compareTo(b.toString()));
-
-                                field.didChange(field.value);
-                              }
-                            }
-                          },
-                          onDelete: (T model) {
-                            field.value!.remove(model);
-                            field.didChange(field.value);
-                          },
-                          removeText: removeText,
-                          enabled: enabled,
-                        ),
-                      )
-                      .toList(),
+                  ...contentWidget,
 
                 /// Botão Adicionar
                 TableButton(
