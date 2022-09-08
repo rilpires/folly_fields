@@ -67,7 +67,7 @@ class ModelFunctionButtonState<T extends AbstractModel<Object>>
         widget.model,
         selection: widget.selection,
       ),
-      builder: (BuildContext context, bool data) => data
+      builder: (BuildContext context, bool data, _) => data
           ? IconButton(
               tooltip: widget.permission.name,
               icon: widget.rowFunction.iconBuilder(context, widget.model) ??

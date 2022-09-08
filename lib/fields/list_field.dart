@@ -79,7 +79,7 @@ class ListField<T extends AbstractModel<Object>,
               <dynamic>[uiBuilder.superPlural(field.context)],
             );
 
-            Future<void> _add() async {
+            Future<void> add() async {
               if (beforeAdd != null) {
                 bool go = await beforeAdd(field.context);
                 if (!go) {
@@ -153,7 +153,7 @@ class ListField<T extends AbstractModel<Object>,
                                 /// Top Add Button
                                 if (showTopAddButton)
                                   IconButton(
-                                    onPressed: _add,
+                                    onPressed: add,
                                     icon: const Icon(FontAwesomeIcons.plus),
                                   ),
                               ],
@@ -217,7 +217,10 @@ class ListField<T extends AbstractModel<Object>,
                               )
                             : onCollapsed == null
                                 ? Padding(
-                                    padding: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                      horizontal: 32,
+                                    ),
                                     child: Text(
                                       field.value!.join(' - '),
                                       maxLines: 2,
@@ -262,7 +265,7 @@ class ListField<T extends AbstractModel<Object>,
                                     uiBuilder.superSingle(field.context)
                                   ],
                                 ).toUpperCase(),
-                                onPressed: _add,
+                                onPressed: add,
                               ),
                           ],
                         ),
