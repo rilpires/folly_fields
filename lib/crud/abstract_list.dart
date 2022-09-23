@@ -181,6 +181,7 @@ class AbstractListState<
   final Map<Object, T> _selections = <Object, T>{};
 
   final Map<String, String> _qsParam = <String, String>{};
+  final List<String> _qsKeys = <String>[];
 
   final Map<ConsumerPermission, AbstractModelFunction<T>>
       effectiveModelFunctions =
@@ -197,7 +198,10 @@ class AbstractListState<
 
     if (widget.qsParam.isNotEmpty) {
       _qsParam.addAll(widget.qsParam);
+      _qsKeys.addAll(widget.qsParam.keys);
     }
+
+    _qsKeys.addAll(<String>['f', 'q', 's']);
   }
 
   ///
@@ -398,7 +402,13 @@ class AbstractListState<
                           qsParam: _qsParam,
                           selection: widget.selection,
                           callback: (Map<String, String> map) {
-                            _qsParam.addAll(map);
+                            _qsParam
+                              ..removeWhere(
+                                (String key, String value) =>
+                                    !_qsKeys.contains(key),
+                              )
+                              ..addAll(map);
+
                             _loadData(context);
                           },
                         ),
@@ -673,7 +683,7 @@ class AbstractListState<
   ///
   ///
   Future<void> _internalLongPress(T model) async => _push(
-        await widget.onLongPress!(
+        await widget.onLongPress?.call(
           context,
           model,
           widget.uiBuilder,
@@ -686,7 +696,7 @@ class AbstractListState<
   ///
   ///
   Future<void> _addEntity() async => _push(
-        await widget.onAdd!(
+        await widget.onAdd?.call(
           context,
           widget.uiBuilder,
           widget.consumer,
@@ -712,7 +722,7 @@ class AbstractListState<
         Navigator.of(context).pop(model);
       }
     } else {
-      Widget? next = await widget.onUpdate!(
+      Widget? next = await widget.onUpdate?.call(
         context,
         model,
         widget.uiBuilder,

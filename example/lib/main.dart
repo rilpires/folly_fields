@@ -16,10 +16,12 @@ import 'package:folly_fields/fields/date_field.dart';
 import 'package:folly_fields/fields/date_time_field.dart';
 import 'package:folly_fields/fields/decimal_field.dart';
 import 'package:folly_fields/fields/dropdown_field.dart';
+import 'package:folly_fields/fields/duration_field.dart';
 import 'package:folly_fields/fields/email_field.dart';
 import 'package:folly_fields/fields/file_field.dart';
 import 'package:folly_fields/fields/icon_data_field.dart';
 import 'package:folly_fields/fields/integer_field.dart';
+import 'package:folly_fields/fields/licence_plate_field.dart';
 import 'package:folly_fields/fields/list_field.dart';
 import 'package:folly_fields/fields/local_phone_field.dart';
 import 'package:folly_fields/fields/mac_address_field.dart';
@@ -27,6 +29,7 @@ import 'package:folly_fields/fields/model_field.dart';
 import 'package:folly_fields/fields/multiline_field.dart';
 import 'package:folly_fields/fields/ncm_field.dart';
 import 'package:folly_fields/fields/password_field.dart';
+import 'package:folly_fields/fields/password_visible_field.dart';
 import 'package:folly_fields/fields/phone_field.dart';
 import 'package:folly_fields/fields/string_field.dart';
 import 'package:folly_fields/fields/time_field.dart';
@@ -52,6 +55,7 @@ import 'package:folly_fields_example/config.dart';
 import 'package:folly_fields_example/example_enum.dart';
 import 'package:folly_fields_example/example_model.dart';
 import 'package:folly_fields_example/example_table.dart';
+import 'package:folly_fields_example/views/credit_card.dart';
 import 'package:folly_fields_example/views/four_images.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -87,6 +91,7 @@ class MyApp extends StatelessWidget {
       title: 'Folly Fields Example',
       theme: ThemeData(
         colorSchemeSeed: Colors.deepOrange,
+        useMaterial3: true,
         brightness: Brightness.dark,
         toggleableActiveColor: Colors.deepOrange,
       ),
@@ -108,6 +113,7 @@ class MyApp extends StatelessWidget {
               edit: true,
             ),
         '/four_images': (_) => const FourImages(),
+        '/credit_card': (_) => const CreditCard(),
         const ExampleMapFunctionRoute().path: (_) =>
             const ExampleMapFunctionRoute(),
       },
@@ -215,6 +221,13 @@ class MyHomePageState extends State<MyHomePage> {
         iconData: FontAwesomeIcons.image,
         onPressed: (BuildContext context) =>
             Navigator.of(context).pushNamed('/four_images'),
+      ),
+
+      MyMenuItem(
+        name: 'Credit Card',
+        iconData: FontAwesomeIcons.creditCard,
+        onPressed: (BuildContext context) =>
+            Navigator.of(context).pushNamed('/credit_card'),
       ),
 
       /// Table
@@ -342,6 +355,26 @@ class MyHomePageState extends State<MyHomePage> {
                         onSaved: (String value) => model.password = value,
                       ),
                       // [/PasswordField]
+                    ),
+
+                    CodeLink(
+                      code: code,
+                      tag: 'PasswordVisibleField',
+                      source: 'https://github.com/edufolly/folly_fields/'
+                          'blob/main/lib/fields/password_visible_field.dart',
+                      child:
+                          // [PasswordVisibleField]
+                          PasswordVisibleField(
+                        labelPrefix: labelPrefix,
+                        label: 'Senha Visível*',
+                        enabled: edit,
+                        validator: (String? value) =>
+                            value == null || value.isEmpty
+                                ? 'O campo senha visível precisa ser informado.'
+                                : null,
+                        onSaved: (String? value) => model.password = value!,
+                      ),
+                      // [/PasswordVisibleField]
                     ),
 
                     CodeLink(
@@ -541,6 +574,26 @@ class MyHomePageState extends State<MyHomePage> {
 
                     CodeLink(
                       code: code,
+                      tag: 'DurationField',
+                      source: 'https://github.com/edufolly/folly_fields/'
+                          'blob/main/lib/fields/duration_field.dart',
+                      child:
+                          // [DurationField]
+                          DurationField(
+                        labelPrefix: labelPrefix,
+                        label: 'Duração*',
+                        enabled: edit,
+                        initialValue: const Duration(hours: 11),
+                        unit: DurationUnit.hour,
+                        validator: FollyValidators.notNull,
+                        onSaved: (Duration? value) =>
+                            model.duration = value ?? Duration.zero,
+                      ),
+                      // [/TimeField]
+                    ),
+
+                    CodeLink(
+                      code: code,
                       tag: 'MacAddressField',
                       source: 'https://github.com/edufolly/folly_fields/'
                           'blob/main/lib/fields/mac_address_field.dart',
@@ -622,6 +675,23 @@ class MyHomePageState extends State<MyHomePage> {
                         onSaved: (String value) => model.cep = value,
                       ),
                       // [/CepField]
+                    ),
+
+                    CodeLink(
+                      code: code,
+                      tag: 'LicencePlateField',
+                      source: 'https://github.com/edufolly/folly_fields/'
+                          'blob/main/lib/fields/licence_plate_field.dart',
+                      child:
+                          // [LicencePlateField]
+                          LicencePlateField(
+                        labelPrefix: labelPrefix,
+                        label: 'Licence Plate*',
+                        enabled: edit,
+                        initialValue: model.licencePlate,
+                        onSaved: (String value) => model.licencePlate = value,
+                      ),
+                      // [/LicencePlateField]
                     ),
 
                     CodeLink(

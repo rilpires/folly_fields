@@ -34,6 +34,11 @@ class IntegerField extends StringField {
     super.style,
     super.decoration,
     super.padding,
+    super.hintText,
+    super.prefix,
+    super.prefixIcon,
+    super.suffix,
+    super.suffixIcon,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -92,5 +97,5 @@ class IntegerEditingController extends TextEditingController {
   ///
   ///
   ///
-  set integer(int? integer) => text = integer.toString();
+  set integer(int? integer) => text = integer == null ? '' : integer.toString();
 }

@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart' as file;
 import 'package:flutter/material.dart';
-import 'package:folly_fields/responsive/responsive.dart';
+import 'package:folly_fields/responsive/responsive_form_field.dart';
 
 ///
 ///
 ///
-class FileField extends FormFieldResponsive<Uint8List> {
+class FileField extends ResponsiveFormField<Uint8List> {
   final FileEditingController? controller;
 
   ///
@@ -36,6 +36,11 @@ class FileField extends FormFieldResponsive<Uint8List> {
     String loadButtonText = 'Carregar',
     String eraseButtonText = 'Apagar',
     String invalidThumbnailText = 'Arquivo não é uma imagem válida',
+    String? hintText,
+    Widget? prefix,
+    Widget? prefixIcon,
+    Widget? suffix,
+    Widget? suffixIcon,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -80,6 +85,11 @@ class FileField extends FormFieldResponsive<Uint8List> {
                           labelPrefix.isEmpty ? label : '$labelPrefix - $label',
                       counterText: '',
                       focusColor: focusColor,
+                      hintText: hintText,
+                      prefix: prefix,
+                      prefixIcon: prefixIcon,
+                      suffix: suffix,
+                      suffixIcon: suffixIcon,
                     ))
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 

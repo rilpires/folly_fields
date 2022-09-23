@@ -17,6 +17,7 @@ class ValidatorField extends StringField {
     super.labelWidget,
     super.controller,
     String? Function(String value)? validator,
+    super.obscureText,
     List<TextInputFormatter>? inputFormatter,
     super.textAlign,
     super.maxLength,
@@ -37,9 +38,16 @@ class ValidatorField extends StringField {
     super.fillColor,
     bool required = true,
     super.autofillHints,
+    super.readOnly,
     super.style,
     super.decoration,
     super.padding,
+    super.hintText,
+    super.prefix,
+    super.prefixIcon,
+    super.suffix,
+    super.suffixIcon,
+    super.trimOnSaved = false,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -76,24 +84,21 @@ class ValidatorField extends StringField {
               : null,
           minLines: 1,
           maxLines: 1,
-          obscureText: false,
           inputFormatter: <TextInputFormatter>[
             ...abstractValidator.inputFormatters ?? <TextInputFormatter>[],
             ...inputFormatter ?? <TextInputFormatter>[]
           ],
           onSaved: enabled
               ? (String? value) {
-                  if (onSaved != null) {
-                    if (value != null) {
-                      value = abstractValidator.strip(value);
-                    }
-
-                    if (!required && value != null && value.isEmpty) {
-                      value = null;
-                    }
-
-                    onSaved(value);
+                  if (value != null) {
+                    value = abstractValidator.strip(value);
                   }
+
+                  if (!required && value != null && value.isEmpty) {
+                    value = null;
+                  }
+
+                  onSaved?.call(value);
                 }
               : null,
           initialValue: initialValue != null

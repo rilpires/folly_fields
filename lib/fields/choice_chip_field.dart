@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:folly_fields/responsive/responsive.dart';
+import 'package:folly_fields/responsive/responsive_form_field.dart';
 
 ///
 ///
 ///
-class ChoiceChipField<T> extends FormFieldResponsive<T> {
+class ChoiceChipField<T> extends ResponsiveFormField<T> {
   final ChoiceChipFieldController<T>? controller;
   final Map<T, String>? items;
 
@@ -33,6 +33,9 @@ class ChoiceChipField<T> extends FormFieldResponsive<T> {
     Color? selectedTextColor,
     WrapAlignment wrapAlignment = WrapAlignment.spaceEvenly,
     WrapCrossAlignment wrapCrossAlignment = WrapCrossAlignment.center,
+    String? hintText,
+    Widget? prefix,
+    Widget? suffix,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -71,6 +74,9 @@ class ChoiceChipField<T> extends FormFieldResponsive<T> {
                           labelPrefix.isEmpty ? label : '$labelPrefix - $label',
                       counterText: '',
                       focusColor: focusColor,
+                      hintText: hintText,
+                      prefix: prefix,
+                      suffix: suffix,
                     ))
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 

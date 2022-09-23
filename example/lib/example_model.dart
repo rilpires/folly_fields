@@ -29,6 +29,7 @@ class ExampleModel extends AbstractModel<int> {
   String text = '';
   String email = '';
   String password = '';
+  String visiblePassword = '';
   String cpf = '';
   String cnpj = '';
   String document = '';
@@ -37,10 +38,12 @@ class ExampleModel extends AbstractModel<int> {
   DateTime dateTime = DateTime.now();
   DateTime? date;
   TimeOfDay time = TimeOfDay.now();
+  Duration duration = Duration.zero;
   String? macAddress;
   String? ncm;
   String? cest;
   String? cnae;
+  String? licencePlate;
   String? cep;
   ExampleEnum ordinal = _exampleEnumParser.defaultItem;
   Color? color;
@@ -65,6 +68,7 @@ class ExampleModel extends AbstractModel<int> {
         text = map['text'] ?? '',
         email = map['email'] ?? '',
         password = map['password'] ?? '',
+        visiblePassword = map['visiblePassword'] ?? '',
         cpf = map['cpf'] ?? '',
         cnpj = map['cnpj'] ?? '',
         document = map['document'] ?? '',
@@ -73,10 +77,12 @@ class ExampleModel extends AbstractModel<int> {
         dateTime = ModelUtils.fromJsonDateMillis(map['dateTime']),
         date = ModelUtils.fromJsonNullableDateMillis(map['date']),
         time = _timeValidator.parse(map['time']) ?? TimeOfDay.now(),
+        duration = Duration(microseconds: map['duration'] ?? 0),
         macAddress = map['macAddress'],
         ncm = map['ncm'],
         cest = map['cest'],
         cnae = map['cnae'],
+        licencePlate = map['licencePlate'],
         cep = map['cep'],
         ordinal = _exampleEnumParser.fromJson(map['ordinal']),
         color = _colorValidator.parse(map['color']),
@@ -98,6 +104,7 @@ class ExampleModel extends AbstractModel<int> {
     map['text'] = text;
     map['email'] = email;
     map['password'] = password;
+    map['visiblePassword'] = visiblePassword;
     map['cpf'] = cpf;
     map['cnpj'] = cnpj;
     map['document'] = document;
@@ -106,10 +113,12 @@ class ExampleModel extends AbstractModel<int> {
     map['dateTime'] = ModelUtils.toMapDateMillis(dateTime);
     map['date'] = ModelUtils.toMapNullableDateMillis(date);
     map['time'] = _timeValidator.format(time);
+    map['duration'] = duration.inMicroseconds;
     map['macAddress'] = macAddress;
     map['ncm'] = ncm;
     map['cest'] = cest;
     map['cnae'] = cnae;
+    map['licencePlate'] = licencePlate;
     map['cep'] = cep;
     map['ordinal'] = _exampleEnumParser.toMap(ordinal);
     if (color != null) {
@@ -154,6 +163,7 @@ class ExampleModel extends AbstractModel<int> {
     text = 'Exemplo $ms';
     email = 'exemplo$ms@exemplo.com.br';
     password = '123456$ms';
+    visiblePassword = 'aBc$ms';
     cpf = CpfValidator.generate();
     cnpj = CnpjValidator.generate();
     document = ms.isEven ? CpfValidator.generate() : CnpjValidator.generate();
@@ -167,6 +177,7 @@ class ExampleModel extends AbstractModel<int> {
     ncm = complete(8);
     cest = complete(7);
     cnae = complete(7);
+    licencePlate = '${generateUpperString(3)}${complete(4)}';
     cep = complete(8);
     color = randomColor;
     ordinal = _exampleEnumParser.random;
@@ -190,6 +201,18 @@ class ExampleModel extends AbstractModel<int> {
   ///
   static String complete(int length) =>
       List<String>.generate(length, (_) => rnd.nextInt(10).toString()).join();
+
+  ///
+  ///
+  ///
+  static String generateUpperString(
+    int length, {
+    String domain = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  }) =>
+      List<String>.generate(
+        length,
+        (_) => domain[rnd.nextInt(domain.length)],
+      ).join();
 
   ///
   ///

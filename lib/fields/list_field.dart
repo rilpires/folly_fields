@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:folly_fields/crud/abstract_model.dart';
 import 'package:folly_fields/crud/abstract_ui_builder.dart';
 import 'package:folly_fields/folly_fields.dart';
-import 'package:folly_fields/responsive/responsive.dart';
+import 'package:folly_fields/responsive/responsive_form_field.dart';
 import 'package:folly_fields/widgets/field_group.dart';
 import 'package:folly_fields/widgets/folly_dialogs.dart';
 import 'package:folly_fields/widgets/table_button.dart';
@@ -15,7 +15,7 @@ import 'package:sprintf/sprintf.dart';
 ///
 // TODO(edufolly): Create controller?
 class ListField<T extends AbstractModel<Object>,
-    UI extends AbstractUIBuilder<T>> extends FormFieldResponsive<List<T>> {
+    UI extends AbstractUIBuilder<T>> extends ResponsiveFormField<List<T>> {
   ///
   ///
   ///
@@ -48,6 +48,10 @@ class ListField<T extends AbstractModel<Object>,
     bool showTopAddButton = false,
     bool showDeleteButton = true,
     bool showAddButton = true,
+    Widget? prefix,
+    Widget? prefixIcon,
+    Widget? suffix,
+    Widget? suffixIcon,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -71,6 +75,10 @@ class ListField<T extends AbstractModel<Object>,
                       counterText: '',
                       enabled: enabled,
                       errorText: field.errorText,
+                      prefix: prefix,
+                      prefixIcon: prefixIcon,
+                      suffix: suffix,
+                      suffixIcon: suffixIcon,
                     ))
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 

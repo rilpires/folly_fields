@@ -38,6 +38,11 @@ class MacAddressField extends ValidatorField {
     super.style,
     super.decoration,
     super.padding,
+    super.hintText,
+    super.prefix,
+    super.prefixIcon,
+    super.suffix,
+    super.suffixIcon,
     super.sizeExtraSmall,
     super.sizeSmall,
     super.sizeMedium,
@@ -56,8 +61,7 @@ class MacAddressField extends ValidatorField {
         super(
           abstractValidator: MacAddressValidator(),
           maxLength: 17,
-          onSaved:
-              onSaved != null ? (String? value) => onSaved(value ?? '') : null,
+          onSaved: (String? value) => onSaved?.call(value ?? ''),
           textCapitalization: TextCapitalization.characters,
         );
 }

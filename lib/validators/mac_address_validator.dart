@@ -27,7 +27,7 @@ class MacAddressValidator extends AbstractValidator<String> {
   ///
   ///
   @override
-  String format(String macAddress) => strip(macAddress).replaceAllMapped(
+  String format(String value) => strip(value).replaceAllMapped(
         RegExp(
           '^([A-F0-9]{2})([A-F0-9]{2})([A-F0-9]{2})'
           r'([A-F0-9]{2})([A-F0-9]{2})([A-F0-9]{2})$',
@@ -52,11 +52,11 @@ class MacAddressValidator extends AbstractValidator<String> {
 
     value = strip(value);
 
-    if (value.isEmpty || value.length != 12) {
+    if (value.length != 12) {
       return false;
     }
 
-    return !value.contains(RegExp('[^A-F0-9]'));
+    return format(value).length == 17;
   }
 
   static final Random _random = Random();
