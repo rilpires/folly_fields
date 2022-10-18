@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 enum CreditCardType {
   /// Visa
   visa(
-    name: 'Visa',
+    brand: 'Visa',
     mask: '#### #### #### #### ###',
     lengths: [16, 18, 19],
     code: CreditCardCode('CVV', [3]),
@@ -20,7 +20,7 @@ enum CreditCardType {
 
   /// Mastercard
   mastercard(
-    name: 'Mastercard',
+    brand: 'Master',
     mask: '#### #### #### ####',
     lengths: [16],
     code: CreditCardCode('CVC', [3]),
@@ -32,11 +32,12 @@ enum CreditCardType {
       Range(270, 271),
       Range(2720),
     },
+    extraBrands: ['mastercard'],
   ),
 
   /// American Express
   amex(
-    name: 'American Express',
+    brand: 'Amex',
     mask: '#### ###### #####',
     lengths: [15],
     code: CreditCardCode('CID', [4]),
@@ -44,11 +45,12 @@ enum CreditCardType {
       Range(34),
       Range(37),
     },
+    extraBrands: ['americanexpress'],
   ),
 
   /// Diners Club
   dinersclub(
-    name: 'Diners Club',
+    brand: 'Diners',
     mask: '#### ###### #########',
     lengths: [14, 16, 19],
     code: CreditCardCode('CVV', [3]),
@@ -58,11 +60,12 @@ enum CreditCardType {
       Range(38),
       Range(39),
     },
+    extraBrands: ['dinersclub'],
   ),
 
   /// Discover
   discover(
-    name: 'Discover',
+    brand: 'Discover',
     mask: '#### #### #### #### ###',
     lengths: [16, 19],
     code: CreditCardCode('CID', [3]),
@@ -75,7 +78,7 @@ enum CreditCardType {
 
   /// JCB
   jcb(
-    name: 'JCB',
+    brand: 'JCB',
     mask: '#### #### #### #### ###',
     lengths: [16, 17, 18, 19],
     code: CreditCardCode('CVV', [3]),
@@ -88,7 +91,7 @@ enum CreditCardType {
 
   /// UnionPay
   unionpay(
-    name: 'UnionPay',
+    brand: 'UnionPay',
     mask: '#### #### #### #### ###',
     lengths: [14, 15, 16, 17, 18, 19],
     code: CreditCardCode('CVN', [3]),
@@ -121,7 +124,7 @@ enum CreditCardType {
 
   /// Maestro
   maestro(
-    name: 'Maestro',
+    brand: 'Maestro',
     mask: '#### #### #### #### ###',
     lengths: [12, 13, 14, 15, 16, 17, 18, 19],
     code: CreditCardCode('CVC', [3]),
@@ -139,7 +142,7 @@ enum CreditCardType {
 
   /// Elo
   elo(
-    name: 'Elo',
+    brand: 'Elo',
     mask: '#### #### #### ####',
     lengths: [16],
     code: CreditCardCode('CVE', [3]),
@@ -174,7 +177,7 @@ enum CreditCardType {
 
   /// Mir
   mir(
-    name: 'Mir',
+    brand: 'Mir',
     mask: '#### #### #### #### ###',
     lengths: [16, 17, 18, 19],
     code: CreditCardCode('CVP2', [3]),
@@ -185,7 +188,7 @@ enum CreditCardType {
 
   /// Hiper
   hiper(
-    name: 'Hiper',
+    brand: 'Hiper',
     mask: '#### #### #### ####',
     lengths: [16],
     code: CreditCardCode('CVC', [3]),
@@ -202,7 +205,7 @@ enum CreditCardType {
 
   /// Hipercard
   hipercard(
-    name: 'Hipercard',
+    brand: 'Hipercard',
     mask: '#### #### #### ####',
     lengths: [16],
     code: CreditCardCode('CVC', [3]),
@@ -213,7 +216,7 @@ enum CreditCardType {
 
   /// Unknown
   unknown(
-    name: 'Unknown',
+    brand: 'Unknown',
     mask: '#### #### #### #### ###',
     lengths: [12, 13, 14, 15, 16, 17, 18, 19],
     code: CreditCardCode('CVV', [3, 4]),
@@ -224,23 +227,25 @@ enum CreditCardType {
   ///
   ///
   ///
-  final String name;
+  final String brand;
   final String mask;
   final List<int> lengths;
   final CreditCardCode code;
   final Set<Range> patterns;
   final bool checkLuhn;
+  final List<String> extraBrands;
 
   ///
   ///
   ///
   const CreditCardType({
-    required this.name,
+    required this.brand,
     required this.mask,
     required this.lengths,
     required this.code,
     required this.patterns,
     this.checkLuhn = true,
+    this.extraBrands = const <String>[],
   });
 
   ///
@@ -318,6 +323,22 @@ enum CreditCardType {
 
     return CreditCardType.unknown;
   }
+
+  ///
+  ///
+  ///
+  static CreditCardType parse(String? value) =>
+      CreditCardType.values.firstWhere(
+        (CreditCardType type) {
+          String? v = value?.replaceAll(RegExp(r'\s'), '').toLowerCase();
+          return type.brand.toLowerCase() == v ||
+              type.extraBrands.fold<bool>(
+                false,
+                (bool p, String e) => p || e.toLowerCase() == v,
+              );
+        },
+        orElse: () => CreditCardType.unknown,
+      );
 }
 
 ///
